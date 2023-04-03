@@ -30,4 +30,4 @@ class Warnotifs(app_commands.Group):
 
 async def setup(bot: commands.Bot):
     bot.tree.add_command(Warnotifs(
-        name="war", description="Adds notifications of territory conquests."))
+        name="war", description="Adds notifications of territory conquests.", default_permissions=discord.Permissions.administrator))

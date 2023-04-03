@@ -1,6 +1,5 @@
 import requests
 
-
 class Player:
     def __init__(self, data):
         self.username = data['username']

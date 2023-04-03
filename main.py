@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 
 from utils import logger
 from commandHandler import command_handler
-from warnotifsdata.data_comparision import data_comparision
+from warnotifsdata.territory_comparison import data_comparison
 
 # .env setup
 import os
@@ -26,7 +26,7 @@ async def on_ready():
 
 @tasks.loop(seconds=30)
 async def warnotif():
-    await data_comparision(bot)
+    await data_comparison(bot)
 
 
 if __name__ == '__main__':
