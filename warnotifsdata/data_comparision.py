@@ -40,7 +40,7 @@ def embed_territory(new_territory: Territory, old_territory: Territory, loss=Fal
     """
     Creates the embed message for the notification.
 
-    loss= If the message is green/red.
+    loss = If the message is green/red.
     """
     coordinateX, coordinateY = get_web_coordinates(new_territory.location)
 
@@ -78,8 +78,20 @@ async def data_comparision(bot: commands.Bot):
     if not old_data:
         old_data = {t.territory: t for t in data}
 
+    territory_count = {}
+
+    # Counts the territories held by each guild in the new data
+    for territory in data:
+        if not territory_count[territory.guild]:
+            territory_count[territory.guild] = 1
+        else:
+            territory_count[territory.guild] += 1
+
+    print(territory_count)
+
     # Compare if there is a change from the old data with the new one.
     for territory in data:
+
         old_territory = old_data.get(territory.territory)
         if old_territory and territory.guild != old_territory.guild:
 
