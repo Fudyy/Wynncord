@@ -51,16 +51,20 @@ def embed_territory(new_territory: Territory, old_territory: Territory, new_terr
     if loss:
         color = 0xf21c1c
 
-    embed = discord.Embed(title=f"Captured by: {new_territory.guild} ({new_territory_count})",
+    embed = discord.Embed(title=f"Captured by: {new_territory.guild}",
                           url=f"https://www.wynncraft.com/stats/guild/{new_territory.guild.replace(' ', '%20')}",
                           color=color)
     embed.set_author(name=f'{new_territory.territory}',
                      url=f"https://map.wynncraft.com/#/{coordinateX}/64/{coordinateY}/-1/wynn-main/Wynncraft")
     embed.set_thumbnail(url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
     embed.add_field(name="Captured at:", value=discord.utils.format_dt(new_territory.acquired, style='R'),
-                    inline=False)
-    embed.add_field(name="Former owner:", value=f'{old_territory.guild} ({old_territory_count})', inline=True)
+                    inline=True)
+    embed.add_field(name=f"{new_territory.guild} is now holding:", value=f"{new_territory_count} Territories",
+                    inline=True)
+    embed.add_field(name="Former owner:", value=f'{old_territory.guild}', inline=False)
     embed.add_field(name="Time captured:", value=get_time_captured(new_territory.acquired, old_territory.acquired),
+                    inline=True)
+    embed.add_field(name=f"{old_territory.guild} is now holding:", value=f"{old_territory_count} Territories",
                     inline=True)
 
     return embed
@@ -117,14 +121,15 @@ async def data_comparison(bot: commands.Bot):
                 else:
                     lost = False
                     channels = get_channels(territory.guild)
+
                 for channel_id in channels:
                     try:
-                        await bot.get_channel(channel_id).send(embed=embed_territory(territory,
-                                                                                     old_territory,
-                                                                                     territory_count[territory.guild],
-                                                                                     territory_count[
-                                                                                         old_territory.guild],
-                                                                                     lost))
+                        embed = embed_territory(territory,
+                                                old_territory,
+                                                counted_territories[territory.guild],
+                                                counted_territories[old_territory.guild],
+                                                lost)
+                        await bot.get_channel(channel_id).send(embed=embed)
                     except:
                         rm_tracking(territory.guild, channel_id)
 
