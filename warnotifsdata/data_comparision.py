@@ -3,16 +3,14 @@ from discord.ext import commands
 from datetime import datetime
 from territories import get_territories
 from territories.get_territories import Territory, Location
-from warnotifsdata.json_data import create_json, check_tracking, get_channels
+from warnotifsdata.json_data import create_json, check_tracking, get_channels, rm_tracking
 
 old_data = []
 
-def set_traked_channel(id: int):
-    global track_channel
-    track_channel = id
-
-
 def get_web_coordinates(location: Location):
+    """
+    Gets the center coordinates of the given Location.
+    """
     coordinateX = (location.startX + location.endX) / 2
     coordinateY = (location.startY + location.endY) / 2
 
@@ -39,6 +37,11 @@ def get_time_captured(newdate: datetime, olddate: datetime):
 
 
 def embed_territory(new_territory: Territory, old_territory: Territory, loss=False):
+    """
+    Creates the embed message for the notification.
+
+    loss= If the message is green/red.
+    """
     coordinateX, coordinateY = get_web_coordinates(new_territory.location)
 
     color = 0x0fb31a
@@ -61,24 +64,41 @@ def embed_territory(new_territory: Territory, old_territory: Territory, loss=Fal
 
 
 async def data_comparision(bot: commands.Bot):
+    """
+    Gets the territory list from the api and compares it with the last one called.
+    Then it send a notification to the saved channels with the respective tracked guild.
+    """
+
+    # Json with all the data from tracked guilds and channels to send notifications.
     create_json()
 
+    # First call doesn't have changes, so it saves it.
     global old_data
     data = get_territories()
     if not old_data:
         old_data = {t.territory: t for t in data}
 
+    # Compare if there is a change from the old data with the new one.
     for territory in data:
         old_territory = old_data.get(territory.territory)
         if old_territory and territory.guild != old_territory.guild:
 
+            # Checks if the change correspond to a tracked guild
             territory_tracked = check_tracking(territory.guild)
             if territory_tracked or check_tracking(old_territory.guild):
-                lost = False
+
+                # Checks if is a lost or won territory
                 if not territory_tracked:
                     lost = True
+                    channels = get_channels(old_territory.guild)
+                else:
+                    lost = False
+                    channels = get_channels(territory.guild)
 
-                for channel_id in get_channels(territory.guild):
-                    await bot.get_channel(channel_id).send(embed=embed_territory(territory, old_territory, lost))
+                for channel_id in channels:
+                    try:
+                        await bot.get_channel(channel_id).send(embed=embed_territory(territory, old_territory, lost))
+                    except:
+                        rm_tracking(territory.guild, channel_id)
 
             old_data[territory.territory] = territory
