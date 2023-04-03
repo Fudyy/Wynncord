@@ -1,11 +1,13 @@
 import discord
 from discord.ext import commands
 from datetime import datetime
+from typing import List
 from territories import get_territories
 from territories.get_territories import Territory, Location
 from warnotifsdata.json_data import create_json, check_tracking, get_channels, rm_tracking
 
 old_data = []
+
 
 def get_web_coordinates(location: Location):
     """
@@ -36,7 +38,8 @@ def get_time_captured(newdate: datetime, olddate: datetime):
     return result
 
 
-def embed_territory(new_territory: Territory, old_territory: Territory, loss=False):
+def embed_territory(new_territory: Territory, old_territory: Territory, new_territory_count: int,
+                    old_territory_count: int, loss=False):
     """
     Creates the embed message for the notification.
 
@@ -48,7 +51,7 @@ def embed_territory(new_territory: Territory, old_territory: Territory, loss=Fal
     if loss:
         color = 0xf21c1c
 
-    embed = discord.Embed(title=f"Captured by: {new_territory.guild}",
+    embed = discord.Embed(title=f"Captured by: {new_territory.guild} ({new_territory_count})",
                           url=f"https://www.wynncraft.com/stats/guild/{new_territory.guild.replace(' ', '%20')}",
                           color=color)
     embed.set_author(name=f'{new_territory.territory}',
@@ -56,14 +59,27 @@ def embed_territory(new_territory: Territory, old_territory: Territory, loss=Fal
     embed.set_thumbnail(url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
     embed.add_field(name="Captured at:", value=discord.utils.format_dt(new_territory.acquired, style='R'),
                     inline=False)
-    embed.add_field(name="Former owner:", value=old_territory.guild, inline=True)
+    embed.add_field(name="Former owner:", value=f'{old_territory.guild} ({old_territory_count})', inline=True)
     embed.add_field(name="Time captured:", value=get_time_captured(new_territory.acquired, old_territory.acquired),
                     inline=True)
 
     return embed
 
 
-async def data_comparision(bot: commands.Bot):
+def territory_count(data: List[Territory]):
+    territory_count = {}
+
+    # Counts the territories held by each guild in the given data
+    for territory in data:
+        if territory.guild not in territory_count:
+            territory_count[territory.guild] = 1
+        else:
+            territory_count[territory.guild] += 1
+
+    return territory_count
+
+
+async def data_comparison(bot: commands.Bot):
     """
     Gets the territory list from the api and compares it with the last one called.
     Then it send a notification to the saved channels with the respective tracked guild.
@@ -78,16 +94,7 @@ async def data_comparision(bot: commands.Bot):
     if not old_data:
         old_data = {t.territory: t for t in data}
 
-    territory_count = {}
-
-    # Counts the territories held by each guild in the new data
-    for territory in data:
-        if territory_count[territory.guild] not in territory_count:
-            territory_count[territory.guild] = 1
-        else:
-            territory_count[territory.guild] += 1
-
-    print(territory_count)
+    counted_territories = territory_count(data)
 
     # Compare if there is a change from the old data with the new one.
     for territory in data:
@@ -99,6 +106,10 @@ async def data_comparision(bot: commands.Bot):
             territory_tracked = check_tracking(territory.guild)
             if territory_tracked or check_tracking(old_territory.guild):
 
+                # if the old territory is not in the territory count the guild doesn't have any territories held
+                if old_territory.guild not in counted_territories:
+                    counted_territories[old_territory.guild] = 0
+
                 # Checks if is a lost or won territory
                 if not territory_tracked:
                     lost = True
@@ -106,10 +117,14 @@ async def data_comparision(bot: commands.Bot):
                 else:
                     lost = False
                     channels = get_channels(territory.guild)
-
                 for channel_id in channels:
                     try:
-                        await bot.get_channel(channel_id).send(embed=embed_territory(territory, old_territory, lost))
+                        await bot.get_channel(channel_id).send(embed=embed_territory(territory,
+                                                                                     old_territory,
+                                                                                     territory_count[territory.guild],
+                                                                                     territory_count[
+                                                                                         old_territory.guild],
+                                                                                     lost))
                     except:
                         rm_tracking(territory.guild, channel_id)
 
