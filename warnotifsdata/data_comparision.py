@@ -82,7 +82,7 @@ async def data_comparision(bot: commands.Bot):
 
     # Counts the territories held by each guild in the new data
     for territory in data:
-        if not territory_count[territory.guild]:
+        if territory_count[territory.guild] not in territory_count:
             territory_count[territory.guild] = 1
         else:
             territory_count[territory.guild] += 1
