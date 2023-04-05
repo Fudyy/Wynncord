@@ -71,6 +71,7 @@ def embed_territory(new_territory: Territory, old_territory: Territory, new_terr
 
 
 def territory_count(data: List[Territory]):
+
     territory_count = {}
 
     # Counts the territories held by each guild in the given data
