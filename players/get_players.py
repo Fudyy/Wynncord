@@ -10,7 +10,7 @@ def unpack_class_data(data):
 
 class PlayerClass:
     """
-    Represents a player class.
+    Represents a player in-game class.
     """
 
     def __init__(self, type: str, level: int, dungeons: dict, raids: dict,
@@ -63,5 +63,5 @@ def get_players(player_name: str):
 
 
 if __name__ == '__main__':
-    player = get_players('Fudy_')
-    print(player)
+    player = get_players('MotasKB')
+    print(player.rank, player.meta['tag']['value'])
