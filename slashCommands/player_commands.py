@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from players import get_players, Player
+from players import get_players, player_embed
 
 class Players(app_commands.Group):
 
@@ -12,7 +12,7 @@ class Players(app_commands.Group):
         if not player:
             await interaction.response.send_message(f'no')
         else:
-            await interaction.response.send_message(f'Player {player.username} has been found.')
+            await interaction.response.send_message(embed=player_embed.embed_constructor(player))
 
 
 async def setup(bot: commands.Bot):

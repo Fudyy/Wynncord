@@ -1,4 +1,5 @@
 from players import get_players, Player
+from discord import Embed
 
 rank_color = {
     'Player': 0xc9c9c9,
@@ -17,6 +18,10 @@ rank_color = {
     'WebDev': 0xff0000,
     'Administrator': 0xff0000
 }
+def embed_constructor(player: Player):
+    embed = Embed(color=0x933434)
+    embed.set_author(name=f"{player.username}", url=f"https://wynncraft.com/stats/player/{player.username}",
+                     icon_url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
+    embed.set_thumbnail(url=f"https://mc-heads.net/head/{player.username}/left")
 
-async def player_embed(player: Player):
-    pass
+    return embed
