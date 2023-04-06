@@ -1,5 +1,6 @@
-from players import get_players, Player
 from discord import Embed
+
+from players import Player
 
 rank_color = {
     'Player': 0xc9c9c9,
@@ -18,6 +19,8 @@ rank_color = {
     'WebDev': 0xff0000,
     'Administrator': 0xff0000
 }
+
+
 def embed_constructor(player: Player):
     embed = Embed(color=0x933434)
     embed.set_author(name=f"{player.username}", url=f"https://wynncraft.com/stats/player/{player.username}",

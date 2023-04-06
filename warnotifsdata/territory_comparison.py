@@ -5,7 +5,7 @@ from discord.ext import commands
 from territories import get_territories
 from territories.get_territories import Territory
 from warnotifsdata.json_data import create_json, check_tracking, get_channels, rm_tracking
-from warnotifsdata.territory_embed_constructor import embed_territory
+from warnotifsdata.territory_embed import embed_territory
 
 old_data = []
 
