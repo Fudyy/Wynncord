@@ -7,7 +7,8 @@ from warnotifsdata.json_data import add_tracking, rm_tracking
 
 
 class Warnotifs(app_commands.Group):
-    @app_commands.command(name='trackguild', description="Tracks war actvity of the guild with notifications in this channel.")
+    @app_commands.command(name='trackguild',
+                          description="Tracks war actvity of the guild with notifications in this channel.")
     @app_commands.describe(guild="Name of the guild to be tracked.")
     async def track_guild(self, interaction: discord.Interaction, guild: str):
         command_logger(interaction.user, '/trackguild', interaction.channel)
@@ -30,4 +31,5 @@ class Warnotifs(app_commands.Group):
 
 async def setup(bot: commands.Bot):
     bot.tree.add_command(Warnotifs(
-        name="war", description="Adds notifications of territory conquests.", default_permissions=discord.Permissions.administrator))
+        name="war", description="Adds notifications of territory conquests.", default_permissions=discord.
+        Permissions(permissions=8)))
