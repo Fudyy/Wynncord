@@ -34,7 +34,7 @@ def get_rank_info(player: Player):
     return rank, color
 
 
-def embed_constructor(player: Player):
+def profile_embed_constructor(player: Player):
     rank, color = get_rank_info(player)
 
     embed = Embed(title=f"{escape_markdown(player.username)}", color=color,

@@ -14,7 +14,7 @@ class Players(app_commands.Group):
         if not player:
             await interaction.response.send_message(f'no')
         else:
-            await interaction.response.send_message(embed=player_embed.embed_constructor(player))
+            await interaction.response.send_message(embed=player_embed.profile_embed_constructor(player))
 
 
 async def setup(bot: commands.Bot):

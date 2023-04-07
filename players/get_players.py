@@ -9,7 +9,6 @@ def unpack_class_data(data):
         classes.append(data[key])
     return classes
 
-
 class PlayerRanking:
     """
     Represents a player online ranking (For now the api doesn't contain any information for this data.)
@@ -55,25 +54,25 @@ class PlayerMeta:
         self.veteran = veteran
 
 
-class PlayerClass:
+class PlayerCharacter:
     """
     Represents a player in-game class, all its data is has the same model as the Wynncraft V2 API.
     """
 
     def __init__(self, type: str, level: int, dungeons: dict, raids: dict,
-                 quests: dict, items_identified: int, mobs_killed: int, pvp: dict,
-                 blocks_walked: int, logins: int, deaths: int, playtime: int,
+                 quests: dict, itemsIdentified: int, mobsKilled: int, pvp: dict,
+                 blocksWalked: int, logins: int, deaths: int, playtime: int,
                  gamemode: dict, skills: dict, professions: dict, discoveries: int,
-                 events_won: int, pre_economy_update: bool):
+                 eventsWon: int, preEconomyUpdate: bool):
         self.type = type
-        self.level = level
+        self.total_level = level
         self.dungeons = dungeons
         self.raids = raids
         self.quests = quests
-        self.items_identified = items_identified
-        self.mobs_killed = mobs_killed
+        self.items_identified = itemsIdentified
+        self.mobs_killed = mobsKilled
         self.pvp = pvp
-        self.blocks_walked = blocks_walked
+        self.blocks_walked = blocksWalked
         self.logins = logins
         self.deaths = deaths
         self.playtime = playtime
@@ -81,8 +80,8 @@ class PlayerClass:
         self.skills = skills
         self.professions = professions
         self.discoveries = discoveries
-        self.events_won = events_won
-        self.pre_economy_update = pre_economy_update
+        self.events_won = eventsWon
+        self.pre_economy_update = preEconomyUpdate
 
 
 class Player:
@@ -95,7 +94,7 @@ class Player:
         self.uuid: int = data['uuid']
         self.rank: str = data['rank']
         self.meta = PlayerMeta(**data['meta'])
-        self.characters = unpack_class_data(data['characters'])
+        self.characters: [] = [PlayerCharacter(**character) for character in unpack_class_data(data['characters'])]
         self.guild = data['guild']
         self.ranking = PlayerRanking(**data['ranking'])
         self.global_stats = PlayerGlobal(**data['global'])
@@ -115,5 +114,6 @@ def get_players(player_name: str):
 
 
 if __name__ == '__main__':
-    player = get_players('MotasKB')
-    print(player.rank, player.meta.tag)
+    player = get_players('Fudy_')
+    for character in player.characters:
+        print(character.professions['combat']['level'])
