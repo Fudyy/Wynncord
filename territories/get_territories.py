@@ -1,7 +1,7 @@
 import requests as requests
 from utils import logger
 from datetime import datetime
-from dateutil import tz
+from utils import convert_datetime
 
 
 class Location:
@@ -26,13 +26,6 @@ class Territory:
     def __str__(self):
         return f"{self.territory} ({self.guildPrefix} {self.guild}) acquired on {self.acquired} at {self.location}"
 
-
-def convert_datetime(utc):
-    from_zone = tz.tzutc()
-    to_zone = tz.tzlocal()
-    utc = utc.replace(tzinfo=from_zone)
-
-    return utc.astimezone(to_zone)
 
 
 
