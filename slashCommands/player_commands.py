@@ -6,7 +6,7 @@ from utils import command_logger
 
 class Players(app_commands.Group):
 
-    @app_commands.command(name='stats', description='Checks the stats of the given player')
+    @app_commands.command(name='profile', description='Checks the Wynn profile of the given player')
     @app_commands.describe(player='Player to search')
     async def stats(self, interaction: discord.Interaction, player: str):
         command_logger(interaction.user.name, 'player stats', interaction.channel_id.__str__())
