@@ -1,9 +1,8 @@
-from typing import List
-
 import discord.ui
 from discord import Embed
 from discord.utils import format_dt, escape_markdown
-from WynnAPI.players import Player, PlayerCharacter
+
+from WynnAPI.players import Player
 
 rank_color = {
     'Player': 0xc9c9c9,  # Gray
@@ -39,6 +38,9 @@ def get_rank_info(player: Player):
 
 
 def profile_embed_constructor(player: Player, rank: str, color: int):
+    """
+    Construct the profile embed for the given player (used in profile View)
+    """
     embed = Embed(title=f"{escape_markdown(player.username)}", color=color,
                   url=f"https://wynncraft.com/stats/player/{player.username}")
     embed.set_thumbnail(url=f"https://mc-heads.net/head/{player.username}/left")
@@ -75,6 +77,9 @@ def profile_embed_constructor(player: Player, rank: str, color: int):
 
 
 def character_embed_constructor(player: Player, color: int):
+    """
+    Construct the characters embed for the given player (used in profile View)
+    """
     embed_list = []
 
     characters = sorted(player.characters, key=lambda c: c.professions['combat']['level'], reverse=True)
@@ -88,6 +93,7 @@ def character_embed_constructor(player: Player, color: int):
     }
 
     def get_character_image(character_type: str):
+        # Made this for vip classes not having an icon
         if character_type in character_types:
             return f"https://cdn.wynncraft.com/nextgen/classes/icons/artboards/{character_types[character_type]}.webp"
         return f"https://cdn.wynncraft.com/nextgen/classes/icons/artboards/{character_type.lower()}.webp"
@@ -104,16 +110,20 @@ def character_embed_constructor(player: Player, color: int):
         embed.add_field(name="", value="", inline=True)
         embed.add_field(name="⚔️ Combat Level:", value=f"{character.professions['combat']['level']}", inline=True)
 
+        embed.add_field(name="", value="", inline=True)
+        embed.add_field(name="", value="====✴️====", inline=True)
+        embed.add_field(name="", value="", inline=True)
+
         embed_list.append(embed)
 
     return embed_list
 
 
 class Profile(discord.ui.View):
-    def __init__(self, player: Player, interaction: discord.Interaction):
-        super().__init__(timeout=6)
+    def __init__(self, player: Player, original_interaction: discord.Interaction):
+        super().__init__(timeout=40)
         self.rank, self.color = get_rank_info(player)
-        self.interaction = interaction
+        self.original_interaction = original_interaction
         self.embeds = []
         self.index = 0
         self.embeds.append(profile_embed_constructor(player, self.rank, self.color))
@@ -136,6 +146,13 @@ class Profile(discord.ui.View):
         self.index += 1
         self.update_buttons()
         await interaction.response.edit_message(embed=self.embeds[self.index], view=self)
+
+    async def interaction_check(self, interaction: discord.Interaction, /) -> bool:
+        if interaction.user != self.original_interaction.user:
+            await interaction.response.send_message("🛑 Only the author of the command can use the buttons!",
+                                                    ephemeral=True)
+            return False
+        return True
 
     def update_buttons(self):
         if self.index == 0:
@@ -164,4 +181,4 @@ class Profile(discord.ui.View):
         self.back_button.style = discord.ButtonStyle.gray
         self.profile_button.style = discord.ButtonStyle.gray
         self.next_button.style = discord.ButtonStyle.gray
-        await self.interaction.edit_original_response(view=self)
+        await self.original_interaction.edit_original_response(view=self)
