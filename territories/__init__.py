@@ -1,1 +1,0 @@
-from territories.get_territories import *

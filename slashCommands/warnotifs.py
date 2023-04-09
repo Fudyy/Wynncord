@@ -2,8 +2,8 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from utils import command_logger
-from guilds import get_guild
-from warnotifsdata.json_data import add_tracking, rm_tracking
+from WynnAPI.guilds import get_guild
+from WarNotifications.json_data import add_tracking, rm_tracking
 
 
 class Warnotifs(app_commands.Group):

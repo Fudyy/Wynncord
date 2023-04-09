@@ -1,0 +1,1 @@
+from WynnAPI.territories.get_territories import *
