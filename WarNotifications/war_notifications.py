@@ -2,10 +2,10 @@ from typing import List
 
 from discord.ext import commands
 
-from territories import get_territories
-from territories.get_territories import Territory
-from warnotifsdata.json_data import create_json, check_tracking, get_channels, rm_tracking
-from warnotifsdata.territory_embed import embed_territory
+from WynnAPI.territories import get_territories
+from WynnAPI.territories import Territory
+from WarNotifications.json_data import create_json, check_tracking, get_channels, rm_tracking
+from MessageEmbeds.territory_embed import embed_territory
 
 old_data = []
 
@@ -23,7 +23,7 @@ def territory_count(data: List[Territory]):
     return territory_count
 
 
-async def data_comparison(bot: commands.Bot):
+async def war_notification_loop(bot: commands.Bot):
     """
     Gets the territory list from the api and compares it with the last one called.
     Then it send a notification to the saved channels with the respective tracked guild.

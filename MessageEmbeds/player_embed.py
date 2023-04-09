@@ -1,6 +1,7 @@
+import discord.ui
 from discord import Embed
 from discord.utils import format_dt, escape_markdown
-from players import Player
+from WynnAPI.players import Player
 
 rank_color = {
     'Player': 0xc9c9c9,  # Gray
@@ -70,3 +71,12 @@ def profile_embed_constructor(player: Player):
     embed.add_field(name="First join:", value=f"{format_dt(player.meta.first_join, 'f')}", inline=True)
 
     return embed
+
+class Profile(discord.ui.View):
+    def __init__(self, player):
+        super().__init__()
+        self.profile_embed = profile_embed_constructor(player)
+        # self.characters_embed = characters_embed TODO: array of character embeds
+    @discord.ui.button(label="►", style=discord.ButtonStyle.green)
+    async def next_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.edit_message(embed=Embed(title="test"))

@@ -1,7 +1,7 @@
 from datetime import datetime
 from discord import Embed
 from discord.utils import format_dt
-from territories import Location, Territory
+from WynnAPI.territories import Location, Territory
 
 
 def get_web_coordinates(location: Location):

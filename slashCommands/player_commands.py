@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from players import get_players, player_embed
+from WynnAPI.players import get_players
+from MessageEmbeds import player_embed
 from utils import command_logger
 
 class Players(app_commands.Group):
@@ -12,9 +13,10 @@ class Players(app_commands.Group):
         command_logger(interaction.user.name, 'player stats', interaction.channel_id.__str__())
         player = get_players(player)
         if not player:
-            await interaction.response.send_message(f'no')
+            await interaction.response.send_message(f'Error trying to find: {player}', ephemeral=True)
         else:
-            await interaction.response.send_message(embed=player_embed.profile_embed_constructor(player))
+            view = player_embed.Profile(player)
+            await interaction.response.send_message(view=view, embed=view.profile_embed)
 
 
 async def setup(bot: commands.Bot):
