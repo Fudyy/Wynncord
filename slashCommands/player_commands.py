@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from WynnAPI.players import get_players
-from MessageEmbeds import player_embed
+from MessageEmbeds import profile_view
 from utils import command_logger
 
 class Players(app_commands.Group):
@@ -15,7 +15,7 @@ class Players(app_commands.Group):
         if not player:
             await interaction.response.send_message(f'Error trying to find: {player}', ephemeral=True)
         else:
-            view = player_embed.Profile(player)
+            view = profile_view.Profile(player, interaction)
             await interaction.response.send_message(view=view, embed=view.embeds[0])
 
 

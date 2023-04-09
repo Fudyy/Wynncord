@@ -20,8 +20,9 @@ rank_color = {
     'Hybrid': 0x0098a3,  # Cyan
     'Music': 0x0098a3,  # Cyan
     'WebDev': 0xff0000,  # Red
-    'Administrator': 0xff0000 # Red
+    'Administrator': 0xff0000  # Red
 }
+
 
 def get_rank_info(player: Player):
     """Gets the rank and the color of a player in a simple way"""
@@ -38,7 +39,6 @@ def get_rank_info(player: Player):
 
 
 def profile_embed_constructor(player: Player, rank: str, color: int):
-
     embed = Embed(title=f"{escape_markdown(player.username)}", color=color,
                   url=f"https://wynncraft.com/stats/player/{player.username}")
     embed.set_thumbnail(url=f"https://mc-heads.net/head/{player.username}/left")
@@ -66,7 +66,6 @@ def profile_embed_constructor(player: Player, rank: str, color: int):
         embed.add_field(name="", value="", inline=True)
         embed.add_field(name="Guild rank:", value=f"{player.guild['rank'].capitalize()}", inline=True)
 
-
     embed.add_field(name="Total level:", value=f"{player.global_stats.total_level['combined']}", inline=True)
     embed.add_field(name="", value="", inline=True)
     embed.add_field(name="First join:", value=f"{format_dt(player.meta.first_join, 'f')}", inline=True)
@@ -74,7 +73,8 @@ def profile_embed_constructor(player: Player, rank: str, color: int):
 
     return embed
 
-def character_embed_constructor(player: Player, color:int):
+
+def character_embed_constructor(player: Player, color: int):
     embed_list = []
 
     characters = sorted(player.characters, key=lambda c: c.professions['combat']['level'], reverse=True)
@@ -93,12 +93,12 @@ def character_embed_constructor(player: Player, color:int):
         return f"https://cdn.wynncraft.com/nextgen/classes/icons/artboards/{character_type.lower()}.webp"
 
     for character in characters:
-
         # yeah, im getting the images from the wynn cdn, im sorry Nepmia ;w;
         embed = Embed(title=f"{escape_markdown(player.username)}", color=color,
                       url=f"https://wynncraft.com/stats/player/{player.username}")
         embed.set_thumbnail(url=get_character_image(character.type))
-        embed.set_author(name="Wynncraft character for:", icon_url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
+        embed.set_author(name="Wynncraft character for:",
+                         icon_url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
 
         embed.add_field(name="Class:", value=f'{character.type.capitalize()}', inline=True)
         embed.add_field(name="", value="", inline=True)
@@ -108,18 +108,26 @@ def character_embed_constructor(player: Player, color:int):
 
     return embed_list
 
+
 class Profile(discord.ui.View):
-    def __init__(self, player: Player):
-        super().__init__(timeout=60)
+    def __init__(self, player: Player, interaction: discord.Interaction):
+        super().__init__(timeout=6)
         self.rank, self.color = get_rank_info(player)
+        self.interaction = interaction
         self.embeds = []
         self.index = 0
         self.embeds.append(profile_embed_constructor(player, self.rank, self.color))
         [self.embeds.append(character) for character in character_embed_constructor(player, self.color)]
 
-    @discord.ui.button(label="◄", style=discord.ButtonStyle.green, disabled=True)
+    @discord.ui.button(label="◄", style=discord.ButtonStyle.gray, disabled=True)
     async def back_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.index -= 1
+        self.update_buttons()
+        await interaction.response.edit_message(embed=self.embeds[self.index], view=self)
+
+    @discord.ui.button(label="◉", style=discord.ButtonStyle.gray, disabled=True)
+    async def profile_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.index = 0
         self.update_buttons()
         await interaction.response.edit_message(embed=self.embeds[self.index], view=self)
 
@@ -131,9 +139,29 @@ class Profile(discord.ui.View):
 
     def update_buttons(self):
         if self.index == 0:
+            # Redundancy because of the back to profile button :(
             self.back_button.disabled = True
-        elif self.index == len(self.embeds)-1:
+            self.profile_button.disabled = True
+            self.next_button.disabled = False
+            self.back_button.style = discord.ButtonStyle.gray
+            self.profile_button.style = discord.ButtonStyle.gray
+            self.next_button.style = discord.ButtonStyle.green
+        elif self.index == len(self.embeds) - 1:
             self.next_button.disabled = True
+            self.next_button.style = discord.ButtonStyle.gray
         else:
             self.back_button.disabled = False
             self.next_button.disabled = False
+            self.profile_button.disabled = False
+            self.back_button.style = discord.ButtonStyle.green
+            self.next_button.style = discord.ButtonStyle.green
+            self.profile_button.style = discord.ButtonStyle.green
+
+    async def on_timeout(self):
+        self.back_button.disabled = True
+        self.profile_button.disabled = True
+        self.next_button.disabled = True
+        self.back_button.style = discord.ButtonStyle.gray
+        self.profile_button.style = discord.ButtonStyle.gray
+        self.next_button.style = discord.ButtonStyle.gray
+        await self.interaction.edit_original_response(view=self)
