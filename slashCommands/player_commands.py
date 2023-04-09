@@ -16,7 +16,7 @@ class Players(app_commands.Group):
             await interaction.response.send_message(f'Error trying to find: {player}', ephemeral=True)
         else:
             view = player_embed.Profile(player)
-            await interaction.response.send_message(view=view, embed=view.profile_embed)
+            await interaction.response.send_message(view=view, embed=view.embeds[0])
 
 
 async def setup(bot: commands.Bot):
