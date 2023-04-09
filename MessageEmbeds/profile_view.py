@@ -130,9 +130,11 @@ def character_embed_constructor(player: Player, color: int):
         embed.add_field(name="<:armouring:1093765660355608606> Armouring", value=f"{character.professions['armouring']['level']}", inline=True)
         embed.add_field(name="<:tailoring:1093765680727326801> Tailoring", value=f"{character.professions['tailoring']['level']}", inline=True)
         embed.add_field(name="<:weaponsmithing:1093765683407499294> Weaponsmithing", value=f"{character.professions['weaponsmithing']['level']}", inline=True)
+        embed.add_field(name="<:woodworking:1094701636565340170> Woodworking", value=f"{character.professions['woodworking']['level']}", inline=True)
         embed.add_field(name="<:jeweling:1093765672284192858> Jeweling", value=f"{character.professions['jeweling']['level']}", inline=True)
         embed.add_field(name="<:alchemism:1093765658623356968> Alchemism", value=f"{character.professions['alchemism']['level']}", inline=True)
         embed.add_field(name="<:scribing:1093765677657100368> Scribing", value=f"{character.professions['scribing']['level']}", inline=True)
+        embed.add_field(name="", value="", inline=True)
         embed.add_field(name="<:cooking:1093765662964449311> Cooking", value=f"{character.professions['cooking']['level']}", inline=True)
 
         embed.set_footer(text=f"character {index} out of {len(characters)}")
