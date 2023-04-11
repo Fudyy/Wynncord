@@ -181,7 +181,7 @@ class Profile(discord.ui.View):
 
     def update_buttons(self):
         if self.index == 0:
-            # Redundancy because of the back to profile button :(
+            # A LOT of redundancy, but it works sooooo :p
             self.back_button.disabled = True
             self.profile_button.disabled = True
             self.next_button.disabled = False
@@ -189,7 +189,11 @@ class Profile(discord.ui.View):
             self.profile_button.style = discord.ButtonStyle.gray
             self.next_button.style = discord.ButtonStyle.green
         elif self.index == len(self.embeds) - 1:
+            self.back_button.disabled = False
+            self.profile_button.disabled = False
             self.next_button.disabled = True
+            self.back_button.style = discord.ButtonStyle.green
+            self.profile_button.style = discord.ButtonStyle.green
             self.next_button.style = discord.ButtonStyle.gray
         else:
             self.back_button.disabled = False
