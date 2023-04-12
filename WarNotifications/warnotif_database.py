@@ -57,8 +57,8 @@ def add_tracking(guild_name: str, channel_id: int):
 
 def rm_tracking(guild_name: str, channel_id: int):
     collection = get_database()['guild_tracking']
-    search = collection.find({'name': guild_name, 'channels': {"$elemMatch": {"$eq": channel_id}}})
-    if len(list(search.clone())) == 0:
+    search = collection.find_one({'name': guild_name, 'channels': {"$elemMatch": {"$eq": channel_id}}})
+    if not search:
         return False
 
     collection.update_one({'name': guild_name},

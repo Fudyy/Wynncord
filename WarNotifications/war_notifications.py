@@ -4,7 +4,7 @@ from discord.ext import commands
 
 from MessageEmbeds.territory_embed import embed_territory
 from WynnAPI.territories import get_territories, Territory
-from warnotif_database import check_tracking, get_channels, rm_tracking
+from WarNotifications.warnotif_database import check_tracking, get_channels, rm_tracking
 
 old_data = []
 
@@ -26,7 +26,7 @@ def territory_count(data: List[Territory]):
     return territory_count
 
 
-def send_embeds(bot: commands.Bot,
+async def send_embeds(bot: commands.Bot,
                 new_territory: Territory, old_territory: Territory,
                 new_territory_count: int, old_territory_count: int,
                 channels: List, lost: bool):
@@ -44,7 +44,7 @@ def send_embeds(bot: commands.Bot,
             rm_tracking(new_territory.guild, channel)
 
 
-def war_notification_loop(bot: commands.Bot):
+async def war_notification_loop(bot: commands.Bot):
     """
     Gets the territory list from the api and compares it with the last one called.
     Then it send a notification to the saved channels with the respective tracked guild.
@@ -56,7 +56,7 @@ def war_notification_loop(bot: commands.Bot):
     # First call doesn't have changes, so it saves the data.
     if not old_data:
         old_data = {t.name: t for t in data}
-        return True
+        return
 
     # Counts the number of territories of each guild in the data for later use
     counted_territories = territory_count(data)

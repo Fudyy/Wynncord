@@ -122,6 +122,7 @@ def character_embed_constructor(player: Player, color: int):
                          icon_url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
 
         embed.add_field(name="💎 Class:", value=f"{character.type.capitalize()} \n"
+                                               f"Total Level: {character.total_level} \n"
                                                f"{' '.join(get_character_gamemodes(character))}", inline=True)
         embed.add_field(name="⚔️ Combat Level:", value=f"{character.professions['combat']['level']}", inline=True)
         embed.add_field(name="💠 Logins:", value=f"{character.logins}", inline=True)
