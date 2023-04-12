@@ -24,7 +24,7 @@ async def on_ready():
     warnotif.start()
 
 
-@tasks.loop(seconds=30)
+@tasks.loop(seconds=60)
 async def warnotif():
     await war_notification_loop(bot)
 

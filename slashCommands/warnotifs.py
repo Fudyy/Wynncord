@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 from utils import command_logger
 from WynnAPI.guilds import get_guild
-from WarNotifications.json_data import add_tracking, rm_tracking
+from WarNotifications.warnotif_database import *
 
 
 class Warnotifs(app_commands.Group):
@@ -16,14 +16,18 @@ class Warnotifs(app_commands.Group):
         if not data:
             await interaction.response.send_message(f'Guild "{guild}" not found.')
         else:
-            add_tracking(data.name, interaction.channel_id)
-            await interaction.response.send_message(f'"{data.name}" is now getting tracked in this channel!.')
+            if add_tracking(guild, interaction.channel_id):
+                await interaction.response.send_message(f"{guild} is now being tracked in this channel!",
+                                                        ephemeral=True)
+            else:
+                await interaction.response.send_message(f"{guild} is already being tracked in this channel!",
+                                                        ephemeral=True)
 
     @app_commands.command(name='untrackguild', description="Removes a guild from getting tracked in this channel.")
     @app_commands.describe(guild="Name of the guild to be removed from tracking in this channel.")
     async def untrack_guild(self, interaction: discord.Interaction, guild: str):
         command_logger(interaction.user, '/untrackguild', interaction.channel)
-        if rm_tracking(guild):
+        if rm_tracking(guild, interaction.channel_id):
             await interaction.response.send_message(f'Guild "{guild}" has been successfully removed.')
         else:
             await interaction.response.send_message(f'Guild "{guild}" is not being tracked in this channel.')
