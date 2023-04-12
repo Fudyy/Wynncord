@@ -2,7 +2,7 @@ import discord.ui
 from discord import Embed
 from discord.utils import format_dt, escape_markdown
 
-from WynnAPI.players import Player
+from WynnAPI.players import Player, PlayerCharacter
 
 rank_color = {
     'Player': 0xc9c9c9,  # Gray
@@ -98,6 +98,20 @@ def character_embed_constructor(player: Player, color: int):
             return f"https://cdn.wynncraft.com/nextgen/classes/icons/artboards/{character_types[character_type]}.webp"
         return f"https://cdn.wynncraft.com/nextgen/classes/icons/artboards/{character_type.lower()}.webp"
 
+    def get_character_gamemodes(character: PlayerCharacter):
+        gamemodes = []
+
+        if character.gamemode['hardcore']:
+            gamemodes.append('<:hardcore:1095526761124605963>')
+        if character.gamemode['ironman']:
+            gamemodes.append('<:ironman:1095526765704785920>')
+        if character.gamemode['craftsman']:
+            gamemodes.append('<:craftsman:1095526758532534413>')
+        if character.gamemode['hunted']:
+            gamemodes.append('<:hunted:1095526762496147527>')
+
+        return gamemodes
+
     index = 1
     for character in characters:
         # yeah, im getting the images from the wynn cdn, im sorry Nepmia ;w;
@@ -107,7 +121,8 @@ def character_embed_constructor(player: Player, color: int):
         embed.set_author(name="Wynncraft character for:",
                          icon_url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
 
-        embed.add_field(name="💎 Class:", value=f'{character.type.capitalize()}', inline=True)
+        embed.add_field(name="💎 Class:", value=f"{character.type.capitalize()} \n"
+                                               f"{' '.join(get_character_gamemodes(character))}", inline=True)
         embed.add_field(name="⚔️ Combat Level:", value=f"{character.professions['combat']['level']}", inline=True)
         embed.add_field(name="💠 Logins:", value=f"{character.logins}", inline=True)
 
