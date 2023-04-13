@@ -27,9 +27,9 @@ def territory_count(data: List[Territory]):
 
 
 async def send_embeds(bot: commands.Bot,
-                new_territory: Territory, old_territory: Territory,
-                new_territory_count: int, old_territory_count: int,
-                channels: List, lost: bool):
+                      new_territory: Territory, old_territory: Territory,
+                      new_territory_count: int, old_territory_count: int,
+                      channels: List, lost: bool):
     for channel in channels:
         try:
             embed = embed_territory(
@@ -86,7 +86,7 @@ async def war_notification_loop(bot: commands.Bot):
         if old_territory not in counted_territories:
             counted_territories[old_territory.guild] = 0
 
-        send_embeds(bot, new_territory, old_territory,
-                    counted_territories[new_territory.guild],
-                    counted_territories[old_territory.guild],
-                    channels, lost)
+        await send_embeds(bot, new_territory, old_territory,
+                          counted_territories[new_territory.guild],
+                          counted_territories[old_territory.guild],
+                          channels, lost)
