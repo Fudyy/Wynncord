@@ -11,7 +11,7 @@ I have created this program without profit motive to help the Wynncraft communit
 [Invite link](https://discord.com/api/oauth2/authorize?client_id=1090759373783056475&permissions=139586717760&scope=bot)
 
 ## Install
-Python V3.11.3
+REQS: Python V3.11.3 | MongoDB
 
 First install all the dependencies with:
 ```
@@ -21,6 +21,7 @@ pip install requests discord.py python-dateutil python-dotenv
 Create a '.env' file inside the directory:
 ```
 TOKEN=(your bot token)
+MONGO_URI=(your mongodb uri)
 ```
 
 Run main.py

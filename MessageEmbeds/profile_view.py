@@ -2,7 +2,7 @@ import discord.ui
 from discord import Embed
 from discord.utils import format_dt, escape_markdown
 
-from WynnAPI.players import Player
+from WynnAPI.players import Player, PlayerCharacter
 
 rank_color = {
     'Player': 0xc9c9c9,  # Gray
@@ -98,6 +98,20 @@ def character_embed_constructor(player: Player, color: int):
             return f"https://cdn.wynncraft.com/nextgen/classes/icons/artboards/{character_types[character_type]}.webp"
         return f"https://cdn.wynncraft.com/nextgen/classes/icons/artboards/{character_type.lower()}.webp"
 
+    def get_character_gamemodes(character: PlayerCharacter):
+        gamemodes = []
+
+        if character.gamemode['hardcore']:
+            gamemodes.append('<:hardcore:1095526761124605963>')
+        if character.gamemode['ironman']:
+            gamemodes.append('<:ironman:1095526765704785920>')
+        if character.gamemode['craftsman']:
+            gamemodes.append('<:craftsman:1095526758532534413>')
+        if character.gamemode['hunted']:
+            gamemodes.append('<:hunted:1095526762496147527>')
+
+        return gamemodes
+
     index = 1
     for character in characters:
         # yeah, im getting the images from the wynn cdn, im sorry Nepmia ;w;
@@ -107,7 +121,9 @@ def character_embed_constructor(player: Player, color: int):
         embed.set_author(name="Wynncraft character for:",
                          icon_url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
 
-        embed.add_field(name="💎 Class:", value=f'{character.type.capitalize()}', inline=True)
+        embed.add_field(name="💎 Class:", value=f"{character.type.capitalize()} \n"
+                                               f"Total Level: {character.total_level} \n"
+                                               f"{' '.join(get_character_gamemodes(character))}", inline=True)
         embed.add_field(name="⚔️ Combat Level:", value=f"{character.professions['combat']['level']}", inline=True)
         embed.add_field(name="💠 Logins:", value=f"{character.logins}", inline=True)
 
@@ -117,9 +133,12 @@ def character_embed_constructor(player: Player, color: int):
 
         embed.add_field(name="<:woodcutting:1094701633339924490> Woodcutting:",
                         value=f"{character.professions['woodcutting']['level']}", inline=True)
-        embed.add_field(name="<:mining:1094701617938432161> Mining", value=f"{character.professions['mining']['level']}", inline=True)
-        embed.add_field(name="<:farming:1094701609675657368> Farming", value=f"{character.professions['farming']['level']}", inline=True)
-        embed.add_field(name="<:fishing:1094701612766871592> Fishing", value=f"{character.professions['fishing']['level']}", inline=True)
+        embed.add_field(name="<:mining:1094701617938432161> Mining",
+                        value=f"{character.professions['mining']['level']}", inline=True)
+        embed.add_field(name="<:farming:1094701609675657368> Farming",
+                        value=f"{character.professions['farming']['level']}", inline=True)
+        embed.add_field(name="<:fishing:1094701612766871592> Fishing",
+                        value=f"{character.professions['fishing']['level']}", inline=True)
 
         embed.add_field(name="", value="", inline=True)
         embed.add_field(name="", value="", inline=True)
@@ -127,21 +146,38 @@ def character_embed_constructor(player: Player, color: int):
         embed.add_field(name="🛠️ Crafting profs 🛠️", value="", inline=True)
         embed.add_field(name="===============", value="", inline=True)
 
-        embed.add_field(name="<:armouring:1093765660355608606> Armouring", value=f"{character.professions['armouring']['level']}", inline=True)
-        embed.add_field(name="<:tailoring:1093765680727326801> Tailoring", value=f"{character.professions['tailoring']['level']}", inline=True)
-        embed.add_field(name="<:weaponsmithing:1093765683407499294> Weaponsmithing", value=f"{character.professions['weaponsmithing']['level']}", inline=True)
-        embed.add_field(name="<:woodworking:1094701636565340170> Woodworking", value=f"{character.professions['woodworking']['level']}", inline=True)
-        embed.add_field(name="<:jeweling:1093765672284192858> Jeweling", value=f"{character.professions['jeweling']['level']}", inline=True)
-        embed.add_field(name="<:alchemism:1093765658623356968> Alchemism", value=f"{character.professions['alchemism']['level']}", inline=True)
-        embed.add_field(name="<:scribing:1093765677657100368> Scribing", value=f"{character.professions['scribing']['level']}", inline=True)
+        embed.add_field(name="<:armouring:1093765660355608606> Armouring",
+                        value=f"{character.professions['armouring']['level']}", inline=True)
+        embed.add_field(name="<:tailoring:1093765680727326801> Tailoring",
+                        value=f"{character.professions['tailoring']['level']}", inline=True)
+        embed.add_field(name="<:weaponsmithing:1093765683407499294> Weaponsmithing",
+                        value=f"{character.professions['weaponsmithing']['level']}", inline=True)
+        embed.add_field(name="<:woodworking:1094701636565340170> Woodworking",
+                        value=f"{character.professions['woodworking']['level']}", inline=True)
+        embed.add_field(name="<:jeweling:1093765672284192858> Jeweling",
+                        value=f"{character.professions['jeweling']['level']}", inline=True)
+        embed.add_field(name="<:alchemism:1093765658623356968> Alchemism",
+                        value=f"{character.professions['alchemism']['level']}", inline=True)
+        embed.add_field(name="<:scribing:1093765677657100368> Scribing",
+                        value=f"{character.professions['scribing']['level']}", inline=True)
         embed.add_field(name="", value="", inline=True)
-        embed.add_field(name="<:cooking:1093765662964449311> Cooking", value=f"{character.professions['cooking']['level']}", inline=True)
+        embed.add_field(name="<:cooking:1093765662964449311> Cooking",
+                        value=f"{character.professions['cooking']['level']}", inline=True)
 
         embed.set_footer(text=f"character {index} out of {len(characters)}")
-        index +=1
+        index += 1
         embed_list.append(embed)
 
     return embed_list
+
+
+def enable_button(button: discord.ui.Button, enabled: bool):
+    if enabled:
+        button.style = discord.ButtonStyle.green
+        button.disabled = False
+    else:
+        button.style = discord.ButtonStyle.gray
+        button.disabled = True
 
 
 class Profile(discord.ui.View):
@@ -181,23 +217,18 @@ class Profile(discord.ui.View):
 
     def update_buttons(self):
         if self.index == 0:
-            # Redundancy because of the back to profile button :(
-            self.back_button.disabled = True
-            self.profile_button.disabled = True
-            self.next_button.disabled = False
-            self.back_button.style = discord.ButtonStyle.gray
-            self.profile_button.style = discord.ButtonStyle.gray
-            self.next_button.style = discord.ButtonStyle.green
+            # A LOT of redundancy, but it works sooooo :p
+            enable_button(self.back_button, False)
+            enable_button(self.profile_button, False)
+            enable_button(self.next_button, True)
         elif self.index == len(self.embeds) - 1:
-            self.next_button.disabled = True
-            self.next_button.style = discord.ButtonStyle.gray
+            enable_button(self.back_button, True)
+            enable_button(self.profile_button, True)
+            enable_button(self.next_button, False)
         else:
-            self.back_button.disabled = False
-            self.next_button.disabled = False
-            self.profile_button.disabled = False
-            self.back_button.style = discord.ButtonStyle.green
-            self.next_button.style = discord.ButtonStyle.green
-            self.profile_button.style = discord.ButtonStyle.green
+            enable_button(self.back_button, True)
+            enable_button(self.profile_button, True)
+            enable_button(self.next_button, True)
 
     async def on_timeout(self):
         self.back_button.disabled = True
