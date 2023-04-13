@@ -4,6 +4,7 @@ from discord.ext import commands, tasks
 from utils import logger
 from commandHandler import command_handler
 from WarNotifications.war_notifications import war_notification_loop
+from Database.database_connection import get_database
 
 # .env setup
 import os
@@ -20,6 +21,7 @@ bot = commands.Bot(command_prefix=".", intents=intents)
 @bot.event
 async def on_ready():
     logger(f'Bot working in client: {bot.user}')
+    get_database()
     await command_handler(bot)
     warnotif.start()
 
