@@ -5,6 +5,7 @@ from WynnAPI.players import get_players
 from MessageEmbeds import profile_view
 from utils import command_logger
 
+
 class Players(app_commands.Group):
 
     @app_commands.command(name='profile', description='Checks the Wynn profile of the given player')

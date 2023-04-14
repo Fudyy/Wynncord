@@ -1,12 +1,18 @@
+import os
 from typing import List
 
 from discord.ext import commands
+from dotenv import load_dotenv, find_dotenv
+from pymongo import MongoClient
 
 from MessageEmbeds.territory_embed import embed_territory
-from WynnAPI.territories import get_territories, Territory
 from WarNotifications.warnotif_database import check_tracking, get_channels, rm_tracking
+from WynnAPI.territories import get_territories, Territory
 
+load_dotenv(find_dotenv())
 old_data = []
+mongo_uri = os.environ.get('MONGO_URI')
+
 
 def territory_count(data: List[Territory]):
     """
@@ -28,7 +34,7 @@ def territory_count(data: List[Territory]):
 async def send_embeds(bot: commands.Bot,
                       new_territory: Territory, old_territory: Territory,
                       new_territory_count: int, old_territory_count: int,
-                      channels: List, lost: bool):
+                      channels, lost: bool):
     for channel in channels:
         try:
             embed = embed_territory(
@@ -40,7 +46,7 @@ async def send_embeds(bot: commands.Bot,
             )
             await bot.get_channel(channel).send(embed=embed)
         except:
-            rm_tracking(new_territory.guild, channel)
+            await rm_tracking(new_territory.guild, channel)
 
 
 async def war_notification_loop(bot: commands.Bot):
@@ -60,6 +66,8 @@ async def war_notification_loop(bot: commands.Bot):
     # Counts the number of territories of each guild in the data for later use
     counted_territories = territory_count(data)
 
+    mongo = MongoClient(mongo_uri)
+
     # Comparison of the new data with the saved data
     for new_territory in data:
 
@@ -68,8 +76,8 @@ async def war_notification_loop(bot: commands.Bot):
         if old_territory == new_territory:
             continue
 
-        captured_is_tracked = check_tracking(new_territory.guild)
-        lost_is_tracked = check_tracking(old_territory.guild)
+        captured_is_tracked = check_tracking(new_territory.guild, mongo)
+        lost_is_tracked = check_tracking(old_territory.guild, mongo)
         if not captured_is_tracked or not lost_is_tracked:
             continue
 
