@@ -16,21 +16,21 @@ class Warnotifs(app_commands.Group):
         if not data:
             await interaction.response.send_message(f'Guild "{guild}" not found.')
         else:
+            await interaction.response.send_message("Loading...", ephemeral=True)
             if add_tracking(guild, interaction.channel_id):
-                await interaction.response.send_message(f"{guild} is now being tracked in this channel!",
-                                                        ephemeral=True)
+                await interaction.edit_original_response(content=f"{guild} is now being tracked in this channel!")
             else:
-                await interaction.response.send_message(f"{guild} is already being tracked in this channel!",
-                                                        ephemeral=True)
+                await interaction.edit_original_response(content=f"{guild} is already being tracked in this channel!")
 
     @app_commands.command(name='untrackguild', description="Removes a guild from getting tracked in this channel.")
     @app_commands.describe(guild="Name of the guild to be removed from tracking in this channel.")
     async def untrack_guild(self, interaction: discord.Interaction, guild: str):
         command_logger(interaction.user, '/untrackguild', interaction.channel)
+        await interaction.response.send_message("Loading...", ephemeral=True)
         if rm_tracking(guild, interaction.channel_id):
-            await interaction.response.send_message(f'Guild "{guild}" has been successfully removed.')
+            await interaction.edit_original_response(content=f'Guild "{guild}" has been successfully removed.')
         else:
-            await interaction.response.send_message(f'Guild "{guild}" is not being tracked in this channel.')
+            await interaction.edit_original_response(content=f'Guild "{guild}" is not being tracked in this channel.')
 
 
 async def setup(bot: commands.Bot):
