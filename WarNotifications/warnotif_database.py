@@ -1,9 +1,9 @@
 from os import environ
+
 from pymongo import MongoClient
 
 database_uri = environ.get('MONGO_URI')
 client = MongoClient(database_uri)['Wynncord']
-
 
 
 def check_tracking(guild_name: str):
@@ -26,6 +26,7 @@ def create_tracking(guild_name: str, channel_id: int):
         'name': guild_name,
         'channels': [channel_id]
     })
+
 
 def get_channels(guild_name: str):
     collection = client['guild_tracking']

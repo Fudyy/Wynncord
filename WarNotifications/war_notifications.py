@@ -8,7 +8,6 @@ from WarNotifications.warnotif_database import check_tracking, get_channels, rm_
 
 old_data = []
 
-
 def territory_count(data: List[Territory]):
     """
     Counts the territories held by each guild in the given data

@@ -4,7 +4,6 @@ from discord.ext import commands, tasks
 from utils import logger
 from commandHandler import command_handler
 from WarNotifications.war_notifications import war_notification_loop
-from Database.database_connection import get_database
 
 # .env setup
 import os
