@@ -21,7 +21,6 @@ bot = commands.Bot(command_prefix=".", intents=intents)
 @bot.event
 async def on_ready():
     logger(f'Bot working in client: {bot.user}')
-    get_database()
     await command_handler(bot)
     warnotif.start()
 
