@@ -1,8 +1,12 @@
 from datetime import datetime
+
 from discord import Embed
 from discord.utils import format_dt
+
 from WynnAPI.territories import Location, Territory
 
+
+# This is made for the war notifications feature, saved for future use.
 
 def get_web_coordinates(location: Location):
     """
