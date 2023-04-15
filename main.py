@@ -1,9 +1,8 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 from utils import logger
 from commandHandler import command_handler
-from WarNotifications.war_notifications import war_notification_loop
 
 # .env setup
 import os
@@ -21,12 +20,6 @@ bot = commands.Bot(command_prefix=".", intents=intents)
 async def on_ready():
     logger(f'Bot working in client: {bot.user}')
     await command_handler(bot)
-    warnotif.start()
-
-
-@tasks.loop(seconds=60)
-async def warnotif():
-    await war_notification_loop(bot)
 
 
 if __name__ == '__main__':
