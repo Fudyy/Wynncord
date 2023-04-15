@@ -47,8 +47,8 @@ def embed_territory(new_territory: Territory, old_territory: Territory, new_terr
         color = 0xf21c1c
 
     embed = Embed(title=f"Captured by: {new_territory.guild}",
-                          url=f"https://www.wynncraft.com/stats/guild/{new_territory.guild.replace(' ', '%20')}",
-                          color=color)
+                  url=f"https://www.wynncraft.com/stats/guild/{new_territory.guild.replace(' ', '%20')}",
+                  color=color)
     embed.set_author(name=f'{new_territory.name}',
                      url=f"https://map.wynncraft.com/#/{coordinateX}/64/{coordinateY}/-1/wynn-main/Wynncraft")
     embed.set_thumbnail(url="https://cdn.wynncraft.com/nextgen/wynncraft_icon.png")
