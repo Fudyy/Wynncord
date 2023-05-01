@@ -29,7 +29,6 @@ Run main.py
 python3 main.py
 ```
 ## Contribution
-For now the bot is in an alpha state, i am still creating features and improving existing ones for performance/user experience. Any PR is welcome!, also you can check out how the development is going on our [Discord server](https://discord.gg/x349Me85Rm)
-
+For now the bot is in an alpha state, i am still creating features and improving existing ones for performance/user experience. Any PR is welcome!.
 ## TODO
 * Add guild stats command.
