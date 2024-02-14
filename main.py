@@ -14,7 +14,7 @@ if token is None:
     logger.error("No token provided on environment variables.")
     exit()
 
-bot = commands.InteractionBot(owner_id=237719849541959681)
+bot = commands.InteractionBot(owner_id=237719849541959681, test_guilds=[1160695207101214853])
 
 
 @bot.event
