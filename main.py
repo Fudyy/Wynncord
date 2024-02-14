@@ -14,8 +14,8 @@ if token is None:
     logger.error("No token provided on environment variables.")
     exit()
 
-bot = commands.InteractionBot(owner_id=237719849541959681, test_guilds=[1160695207101214853])
-
+bot = commands.InteractionBot(owner_id=237719849541959681, test_guilds=[1160695207101214853], activity=
+                              disnake.Activity(type=disnake.ActivityType.playing, name="Fruma waiting room!"))
 
 @bot.event
 async def on_ready():
