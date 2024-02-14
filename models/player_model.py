@@ -1,7 +1,7 @@
 from typing import Optional, List, Dict
 from datetime import datetime
 from dateutil import tz
-
+from utils.logger import logger
 
 class LegacyRankColour:
     def __init__(self, **kwargs):
@@ -145,7 +145,18 @@ def to_local_time(datestring: str) -> datetime:
     """
     Converts the date string to a datetime with local timezone.
     """
-    raw_date = datetime.strptime(datestring, '%Y-%m-%dT%H:%M:%S.%fZ')
+
+    # This is a workaround for the inconsistent date format bug from api v3
+    try:
+        raw_date = datetime.strptime(datestring, '%Y-%m-%dT%H:%M:%S.%fZ')
+    except ValueError:
+        try:
+            raw_date = datetime.strptime(datestring, '%Y-%m-%dT%H:%M:%SZ')
+        except ValueError:
+            raw_date = None
+            logger.error("There was an error converting the date string to a datetime object. (It's probably the "
+                         "inconsistent date format bug form api v3)")
+
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
     utc = raw_date.replace(tzinfo=from_zone)
