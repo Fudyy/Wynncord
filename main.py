@@ -15,11 +15,12 @@ if token is None:
     exit()
 
 bot = commands.InteractionBot(owner_id=237719849541959681, test_guilds=[1160695207101214853], activity=
-                              disnake.Activity(type=disnake.ActivityType.playing, name="Fruma waiting room!"))
+disnake.Activity(type=disnake.ActivityType.playing, name="Fruma waiting room!"))
+
 
 @bot.event
 async def on_ready():
-    logger.info("="*30)
+    logger.info("=" * 30)
     logger.info(f"Bot is running on client: {bot.user}")
     logger.info(f"Client ID: {bot.user.id}")
     logger.info(f"Python version: {python_version()}")
